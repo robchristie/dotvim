@@ -24,13 +24,79 @@ call plug#end()
 "==================================================================
 "|| General                                                      ||
 "==================================================================
+" Keep undo history across sessions, by storing in file.
+"if has('persistent_undo')
+"    silent !mkdir -p ~/.vim/backup/swap > /dev/null 2>&1
+"    set undodir=~/.vim/tmp
+"    set undofile
+"endif
+
 set history=1000
+set showcmd                         " Show incomplete cmds down the bottom
+set showmode                        " Show current mode down the bottom
+set ruler                           " Show current position
+set wildmenu                        " Turn on wild menu
+set wildmode=longest:full,full
+set number                          " Turn on line numbering
+set showmatch                       " Highlight matching braces
+set title                           " Display filename in window title
+set incsearch                       " Turn on incremental search
+set hlsearch                        " Highlight search
+set scrolloff=10                    " Keep n lines visible when scrolling
+set laststatus=2                    " Make status line always visible
+set ch=2                            " Make command line 2 lines high
+set bs=2                            " Allow backspace to delete
+set autoread                        " Autoread externally edited files
+autocmd BufEnter * lcd %:p:h        " Set to current working dir
+set formatoptions-=t                " Stop autowrapping long lines
+
+set backup                          " Enable backup
+set backupdir=~/.local/share/nvim/swap
+set undofile
+set undodir=~/.config/nvim/tmp
+
+" Set to wrap and not break in the middle of words
+set wrap linebreak nolist
+
+" Default space configuration
+set tabstop=2                       " Default tabstop
+set shiftwidth=2                    " Default tabstop
+set expandtab                       " Default tab setting
+
+""" Restore cursor to last position
+function! ResCur()
+  if line("'\"") <= line("$")
+    normal! g`"
+    return 1
+  endif
+endfunction
+
+augroup resCur
+  autocmd!
+  autocmd BufWinEnter * call ResCur()
+augroup END
+
+" Set cwd to current file
+autocmd BufEnter * silent! lcd %:p:h
 
 "==================================================================
 "|| nvim terminal stuff                                          || 
 "==================================================================
 " Window split settings
 highlight TermCursor ctermfg=red guifg=red
+
+" terminal emulator
+tnoremap <Esc> <C-\><C-n>
+
+" Move between windows (with ALT-hold)
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
 
 "==================================================================
 "|| Colours                                                      ||
